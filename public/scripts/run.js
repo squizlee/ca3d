@@ -3,7 +3,7 @@ setScene();
 // Radius min, max, hlines and vlines min, max, equal hvlines
 //paramSphere(1, 2, 1, 20, true, true);
 
-createGrid(20, 20, 20, 1);
+createGrid(10, 10, 10, 1);
 
 // Creates rings, numRings, isMobius
 //createRings(6);
