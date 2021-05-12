@@ -19,8 +19,11 @@ function setScene() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 	controls = new THREE.OrbitControls(camera, renderer.domElement);
-    camera.position.set(0.0,0.0,20);
-    console.log("Check out the position", camera);
+    camera.position.set(0.0,0.0,-20);
+
+    // HELPER
+    const axesHelper = new THREE.AxesHelper(8);
+    scene.add(axesHelper);
 }
 
 //Resize the scene and update the camera aspect to the screen ration
@@ -45,7 +48,6 @@ function createBufferCube() {
         1, 1, 1,
         -1, -1, 1,
     ]);
-    //BUG: The positioning of the mesh and camera are weird like wtf????
 
     // TODO: Index redundant vertices to reduce memory load
 
@@ -54,7 +56,6 @@ function createBufferCube() {
         color: 0x00ff00
     });
     const mesh = new THREE.Mesh(geometry, material);
-    console.log(mesh);
     scene.add(mesh);
-    mesh.position.set(0, 0, 10);
+    mesh.position.set(0, 0, 0);
 }
