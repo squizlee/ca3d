@@ -7,6 +7,17 @@ let renderer;
 let controls;
 let raycaster;
 
+// STATE MANAGEMENT
+// State colors to be rendered
+const STATE = {
+	DEAD: {
+		color: 0xff0000, // red
+	},
+	ALIVE: {
+		color: 0x00ff00, // green
+	},
+};
+
 //Setup the 3 main components: scene, camera, renderer
 function setScene() {
 	raycaster = new THREE.Raycaster();
@@ -19,11 +30,11 @@ function setScene() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 	controls = new THREE.OrbitControls(camera, renderer.domElement);
-    camera.position.set(0.0,0.0,-20);
+	camera.position.set(0.0, 0.0, 20);
 
-    // HELPER
-    const axesHelper = new THREE.AxesHelper(8);
-    scene.add(axesHelper);
+	// HELPER
+	const axesHelper = new THREE.AxesHelper(8);
+	scene.add(axesHelper);
 }
 
 //Resize the scene and update the camera aspect to the screen ration
@@ -41,21 +52,86 @@ function createBufferCube() {
 	// let's just worry about positioning of the vertices
 	const geometry = new THREE.BufferGeometry();
 
-    // this just generates a single triangle for now
-    const vertices = new Float32Array( [
-        // front 
-        -1, 1, 1,
-        1, 1, 1,
-        -1, -1, 1,
-    ]);
+	// this just generates a single triangle for now
+	const vertices = [
+		// front
+		{ pos: [-1, -1, 1], norm: [0, 0, 1], uv: [0, 0] },
+		{ pos: [1, -1, 1], norm: [0, 0, 1], uv: [1, 0] },
+		{ pos: [-1, 1, 1], norm: [0, 0, 1], uv: [0, 1] },
 
-    // TODO: Index redundant vertices to reduce memory load
+		{ pos: [-1, 1, 1], norm: [0, 0, 1], uv: [0, 1] },
+		{ pos: [1, -1, 1], norm: [0, 0, 1], uv: [1, 0] },
+		{ pos: [1, 1, 1], norm: [0, 0, 1], uv: [1, 1] },
 
-    geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
-    const material = new THREE.MeshBasicMaterial({
-        color: 0x00ff00
-    });
-    const mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-    mesh.position.set(0, 0, 0);
+		// right
+		{ pos: [1, -1, 1], norm: [1, 0, 0], uv: [0, 0] },
+		{ pos: [1, -1, -1], norm: [1, 0, 0], uv: [1, 0] },
+		{ pos: [1, 1, 1], norm: [1, 0, 0], uv: [0, 1] },
+
+		{ pos: [1, 1, 1], norm: [1, 0, 0], uv: [0, 1] },
+		{ pos: [1, -1, -1], norm: [1, 0, 0], uv: [1, 0] },
+		{ pos: [1, 1, -1], norm: [1, 0, 0], uv: [1, 1] },
+		// back
+		{ pos: [1, -1, -1], norm: [0, 0, -1], uv: [0, 0] },
+		{ pos: [-1, -1, -1], norm: [0, 0, -1], uv: [1, 0] },
+		{ pos: [1, 1, -1], norm: [0, 0, -1], uv: [0, 1] },
+
+		{ pos: [1, 1, -1], norm: [0, 0, -1], uv: [0, 1] },
+		{ pos: [-1, -1, -1], norm: [0, 0, -1], uv: [1, 0] },
+		{ pos: [-1, 1, -1], norm: [0, 0, -1], uv: [1, 1] },
+		// left
+		{ pos: [-1, -1, -1], norm: [-1, 0, 0], uv: [0, 0] },
+		{ pos: [-1, -1, 1], norm: [-1, 0, 0], uv: [1, 0] },
+		{ pos: [-1, 1, -1], norm: [-1, 0, 0], uv: [0, 1] },
+
+		{ pos: [-1, 1, -1], norm: [-1, 0, 0], uv: [0, 1] },
+		{ pos: [-1, -1, 1], norm: [-1, 0, 0], uv: [1, 0] },
+		{ pos: [-1, 1, 1], norm: [-1, 0, 0], uv: [1, 1] },
+		// top
+		{ pos: [1, 1, -1], norm: [0, 1, 0], uv: [0, 0] },
+		{ pos: [-1, 1, -1], norm: [0, 1, 0], uv: [1, 0] },
+		{ pos: [1, 1, 1], norm: [0, 1, 0], uv: [0, 1] },
+
+		{ pos: [1, 1, 1], norm: [0, 1, 0], uv: [0, 1] },
+		{ pos: [-1, 1, -1], norm: [0, 1, 0], uv: [1, 0] },
+		{ pos: [-1, 1, 1], norm: [0, 1, 0], uv: [1, 1] },
+		// bottom
+		{ pos: [1, -1, 1], norm: [0, -1, 0], uv: [0, 0] },
+		{ pos: [-1, -1, 1], norm: [0, -1, 0], uv: [1, 0] },
+		{ pos: [1, -1, -1], norm: [0, -1, 0], uv: [0, 1] },
+
+		{ pos: [1, -1, -1], norm: [0, -1, 0], uv: [0, 1] },
+		{ pos: [-1, -1, 1], norm: [0, -1, 0], uv: [1, 0] },
+		{ pos: [-1, -1, -1], norm: [0, -1, 0], uv: [1, 1] },
+	];
+
+	let positions = [];
+	let normals = [];
+    let uvs = [];
+	for (const v of vertices) {
+		positions.push(...v.pos);
+		normals.push(...v.norm);
+        uvs.push(...v.uv);
+	}
+
+	// TODO: Index redundant vertices to reduce memory load
+
+	geometry.setAttribute(
+		"position",
+		new THREE.BufferAttribute(new Float32Array(positions), 3)
+	);
+	geometry.setAttribute(
+		"normal",
+		new THREE.BufferAttribute(new Float32Array(normals), 3)
+	);
+	geometry.setAttribute(
+		"uv",
+		new THREE.BufferAttribute(new Float32Array(uvs), 2)
+	);
+	const material = new THREE.MeshBasicMaterial({
+		color: 0xbebebe, // grey
+	});
+	const mesh = new THREE.Mesh(geometry, material);
+	scene.add(mesh);
+	mesh.position.set(0, 0, 0);
 }
