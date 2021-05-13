@@ -1,17 +1,3 @@
-var speed2 = 0.005;
-
-//Animate a sphere to rotate around x axis and transform along y, z axis
-function animate_sphere() {
-    sphere.rotation.y += speed2;
-
-    // renderer.render(scene, camera);
-    // requestAnimationFrame(animate_sphere);
-}
-
-function rotate(object) {
-    object.rotation.z += speed2;
-}
-
 var counter= 0;
 var colour = new THREE.Color(1,0.5,0);
 function animate() {
