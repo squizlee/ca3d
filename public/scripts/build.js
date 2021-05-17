@@ -11,12 +11,12 @@ function createCube(r, color){
     return cube;
 }
 
+// Lighting
 function addLight() {
     cameralight = new THREE.PointLight(new THREE.Color(1, 1, 1), 0.3);
     cameralight.castShadow = true;
     ambientlight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 1);
     camera.add(cameralight);
-
     scene.add(ambientlight);
     //var spotLightHelper = new THREE.SpotLightHelper( spotlight );
     //scene.add( spotLightHelper );
