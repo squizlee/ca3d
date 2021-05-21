@@ -1,21 +1,12 @@
 import * as THREE from "../lib/three.module.js";
 import { OrbitControls } from "../lib/OrbitControls.js";
+import {RandomState, STATE} from "./state.js";
 
 let scene;
 let camera;
 let renderer;
 let controls;
 
-// STATE MANAGEMENT
-// State colors to be rendered
-const STATE = {
-	DEAD: {
-		color: 0xff0000, // red
-	},
-	ALIVE: {
-		color: 0x00ff00, // green
-	},
-};
 
 //Setup the 3 main components: scene, camera, renderer
 function setScene() {
