@@ -15,13 +15,14 @@ const STATE = {
  * @param {Number} column number of columns
  * @param {Number} depth depth of grid
  */
-function RandomState(row, column, depth){
+function RandomState(row = 2, column = 2, depth = 2){
 	let GRID = [];
 
 	let createRandomRow = () => {
 		let arr = new Uint8Array(column);
 		crypto.getRandomValues(arr);
 		arr.forEach((el, index) => {
+			// 0: for dead 1: for alive
 			el > (255 / 2) ? arr[index] = 1 : arr[index] = 0;
 		});
 		return arr;
@@ -44,4 +45,14 @@ function RandomState(row, column, depth){
 	return GRID;
 }
 
-export {RandomState, STATE};
+/**
+ * return the chunk by memory 
+ * @param {Array} GRID the state management grid
+ * @param {Number} chunk n-chunk to grab
+ * @returns {2D Array} of 1 and 0s
+ */
+function getChunk(GRID, chunk) {
+	return GRID[chunk];
+}
+
+export {RandomState, STATE, getChunk};

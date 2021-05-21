@@ -1,18 +1,17 @@
 import * as THREE from "../lib/three.module.js";
 import { OrbitControls } from "../lib/OrbitControls.js";
-import {RandomState, STATE} from "./state.js";
+import { RandomState, STATE, getChunk } from "./state.js";
 
 let scene;
 let camera;
 let renderer;
 let controls;
 
-
 //Setup the 3 main components: scene, camera, renderer
 function setScene() {
 	scene = new THREE.Scene();
 	let ratio = window.innerWidth / window.innerHeight;
-	camera = new THREE.PerspectiveCamera(75, ratio, 0.1, 1000);
+	camera = new THREE.PerspectiveCamera(75, ratio, 0.1, 200);
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
@@ -24,11 +23,15 @@ function setScene() {
 	scene.add(axesHelper);
 }
 
-function createCube(){
+// position is a vector3
+function createCube(position) {
 	const geometry = new THREE.BoxGeometry();
-	const material = new THREE.MeshBasicMaterial({wireframe: true});
+	const material = new THREE.MeshBasicMaterial({ wireframe: true});
 	const cube = new THREE.Mesh(geometry, material);
 	scene.add(cube);
+	if (position) {
+		cube.position.set(position.x, position.y, position.z);
+	}
 }
 
 function animate() {
@@ -40,10 +43,22 @@ function animate() {
 
 function main() {
 	setScene();
-	createCube();
+	const GRID = RandomState(20, 20, 20);
+	renderGridHack(GRID);
 	animate();
 }
 main();
+
+function renderGridHack(GRID) {
+	GRID.forEach((chunk, chunkLayer) => {
+		chunk.forEach((row, rowNum) => {
+			row.forEach((columnEntry, index) => {
+				if(columnEntry !== 0)
+					createCube(new THREE.Vector3(index, rowNum, chunkLayer));
+			});
+		});
+	});
+}
 
 //Resize the scene and update the camera aspect to the screen ration
 var resizeScene = function () {
