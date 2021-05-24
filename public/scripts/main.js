@@ -1,6 +1,7 @@
 import * as THREE from "../lib/three.module.js";
 import { OrbitControls } from "../lib/OrbitControls.js";
 import { RandomState, STATE, getChunk } from "./state.js";
+import { GUI } from "../lib/dat.gui.module.js";
 
 let scene;
 let camera;
@@ -48,6 +49,10 @@ function main() {
 	animate();
 }
 main();
+
+const gui = new GUI()
+const gridfolder = gui.addFolder("Grid")
+//gridfolder.add(main().GRID.rotation, "x", 0, Math.PI * 2, 0.01)
 
 function renderGridHack(GRID) {
 	GRID.forEach((chunk, chunkLayer) => {
