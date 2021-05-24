@@ -6,6 +6,7 @@ let scene;
 let camera;
 let renderer;
 let controls;
+let visualGrid; // contains all cubes on the screen
 
 //Setup the 3 main components: scene, camera, renderer
 function setScene() {
@@ -17,10 +18,13 @@ function setScene() {
 	document.body.appendChild(renderer.domElement);
 	controls = new OrbitControls(camera, renderer.domElement);
 	camera.position.set(0.0, 0.0, 20);
+	visualGrid = new THREE.Group(); 
 
 	// HELPER
 	const axesHelper = new THREE.AxesHelper(8);
 	scene.add(axesHelper);
+
+	scene.add(visualGrid);
 }
 
 // position is a vector3
@@ -29,10 +33,21 @@ function createCube(position) {
 	const material = new THREE.MeshBasicMaterial({ wireframe: false});
 	const cube = new THREE.Mesh(geometry, material);
 	cube.matrixAutoUpdate = false; // experimental: the cubes do not change position/rotation/quarternion/scale
-	scene.add(cube);
+	visualGrid.add(cube);
 	if (position) {
 		cube.position.set(position.x, position.y, position.z);
 		cube.updateMatrix();
+	}
+
+	if(position.x == 0 && position.y == 0 && position.z == 0){
+		cube.material.color.setHex(0xff0000);
+	}
+
+	if(position.x == 0 && position.y == 1 && position.z == 0){
+		cube.material.color.setHex(0x00ff00);
+	}
+	if(position.x == 0 && position.y == 0 && position.z == 1){
+		cube.material.color.setHex(0x00ff00);
 	}
 }
 
@@ -45,7 +60,7 @@ function animate() {
 
 function main() {
 	setScene();
-	const GRID = RandomState(20, 20, 20);
+	const GRID = RandomState(5, 5, 5);
 	renderGridHack(GRID);
 	animate();
 }
