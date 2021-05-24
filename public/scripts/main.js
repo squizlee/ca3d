@@ -7,6 +7,12 @@ let camera;
 let renderer;
 let controls;
 let visualGrid; // contains all cubes on the screen
+let clock;
+
+const RULES = {
+	numSurvive: 2,
+	numBorn: 1,
+};
 
 //Setup the 3 main components: scene, camera, renderer
 function setScene() {
@@ -20,6 +26,7 @@ function setScene() {
 	camera.position.set(0.0, 0.0, 20);
 	visualGrid = new THREE.Group(); 
 
+	clock = new THREE.Clock(false);
 	// HELPER
 	const axesHelper = new THREE.AxesHelper(8);
 	scene.add(axesHelper);
@@ -52,14 +59,25 @@ function createCube(position, parameters) {
 function animate() {
 	renderer.render(scene, camera);
 	controls.update();
-
+	const updateTime = 1; // how often to update in seconds
+	if(clock.getElapsedTime() >= updateTime) {
+		changeState();
+		clock.stop();
+		clock.start();
+	}
 	requestAnimationFrame(animate);
+}
+
+// update the state
+function changeState(){
+
 }
 
 function main() {
 	setScene();
-	const GRID = RandomState(15, 15, 15);
+	const GRID = RandomState(23, 23, 23);
 	renderGridHack(GRID);
+	clock.start(); // start the clock before animating/changing state
 	animate();
 }
 main();

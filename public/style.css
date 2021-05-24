@@ -12,6 +12,10 @@ body {
 	height: 100%;
 }
 
+h1 {
+	position: absolute;
+}
+
 canvas {
 	width: 100%;
 	display: block;
