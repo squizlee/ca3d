@@ -1,6 +1,6 @@
 import * as THREE from "../lib/three.module.js";
 import { OrbitControls } from "../lib/OrbitControls.js";
-import { RandomState, getChunk } from "./state.js";
+import { RandomState, getChunk} from "./state.js";
 
 let scene;
 let camera;
@@ -68,11 +68,6 @@ function animate() {
 	requestAnimationFrame(animate);
 }
 
-// update the state
-function changeState(){
-
-}
-
 function main() {
 	setScene();
 	const GRID = RandomState(23, 23, 23);
@@ -81,6 +76,14 @@ function main() {
 	animate();
 }
 main();
+
+function changeState() {
+	// for each entry in the grid 
+	//  	check neighbors: update
+	// if dead deincrement all neighboring cubes
+	// if born increment all neighboring cubes
+	// if surviving do nothing
+}
 
 function renderGridHack(GRID) {
 	let position = new THREE.Vector3();

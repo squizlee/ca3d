@@ -122,4 +122,4 @@ function getChunk(GRID, chunk) {
 	return GRID[chunk];
 }
 
-export { RandomState, getChunk };
+export { RandomState, getChunk};
