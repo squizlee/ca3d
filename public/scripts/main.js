@@ -28,9 +28,9 @@ function setScene() {
 }
 
 // position is a vector3
-function createCube(position) {
+function createCube(position, parameters) {
 	const geometry = new THREE.BoxGeometry();
-	const material = new THREE.MeshBasicMaterial({ wireframe: false});
+	const material = new THREE.MeshBasicMaterial({ wireframe: true});
 	const cube = new THREE.Mesh(geometry, material);
 	cube.matrixAutoUpdate = false; // experimental: the cubes do not change position/rotation/quarternion/scale
 	visualGrid.add(cube);
@@ -39,16 +39,14 @@ function createCube(position) {
 		cube.updateMatrix();
 	}
 
+	if(parameters.display === false) {
+		cube.visible = false;
+	}
+
 	if(position.x == 0 && position.y == 0 && position.z == 0){
 		cube.material.color.setHex(0xff0000);
 	}
 
-	if(position.x == 0 && position.y == 1 && position.z == 0){
-		cube.material.color.setHex(0x00ff00);
-	}
-	if(position.x == 0 && position.y == 0 && position.z == 1){
-		cube.material.color.setHex(0x00ff00);
-	}
 }
 
 function animate() {
@@ -60,7 +58,7 @@ function animate() {
 
 function main() {
 	setScene();
-	const GRID = RandomState(5, 5, 5);
+	const GRID = RandomState(15, 15, 15);
 	renderGridHack(GRID);
 	animate();
 }
@@ -71,10 +69,11 @@ function renderGridHack(GRID) {
 	GRID.forEach((chunk, chunkLayer) => {
 		chunk.forEach((row, rowNum) => {
 			row.forEach((columnEntry, index) => {
-				if(columnEntry.state !== 0){
-					position.set(index, rowNum, chunkLayer);
-					createCube(position);
-				}
+				position.set(index, rowNum, chunkLayer);
+				if(columnEntry.state === 0 || columnEntry.num_neighbors === 6){
+					createCube(position, {display: false});
+				}else 
+					createCube(position, {});
 			});
 		});
 	});

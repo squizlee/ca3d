@@ -100,14 +100,16 @@ function updateNumNeighbors(GRID){
 					if(GRID[cindex - 1][rindex][index].state == 1) ++num;
 				}
 
+				if(num === 6){
+					console.log("Don't render me!");
+				}
+
 				// update
 				col.num_neighbors = num;
 			});
 		});
 	});
 
-	console.log(GRID[0][0][0]);
-	console.log(GRID);
 }
 
 /**
