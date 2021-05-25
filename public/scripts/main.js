@@ -1,6 +1,7 @@
 import * as THREE from "../lib/three.module.js";
 import { OrbitControls } from "../lib/OrbitControls.js";
 import { RandomState, getChunk, mutateNeighbours} from "./state.js";
+import { GUI } from "../lib/dat.gui.module.js";
 
 let scene;
 let camera;
@@ -157,3 +158,15 @@ var resizeScene = function () {
 	renderer.render(scene, camera);
 };
 window.addEventListener("resize", resizeScene);
+
+const gui = new GUI()
+const ruleFolder = gui.addFolder("Rule")
+ruleFolder.add(RULES, "numBorn", -1, 6, 1)
+ruleFolder.add(RULES, "numSurvive", -1, 6, 1)
+ruleFolder.open()
+const gridFolder = gui.addFolder("Grid")
+// gridFolder.add(GRIDDIMENSIONS, "x", 10, 100, 5)
+// gridFolder.add(GRIDDIMENSIONS, "y", 10, 100, 5)
+// gridFolder.add(GRIDDIMENSIONS, "z", 10, 100, 5)
+// gridFolder.open()
+
