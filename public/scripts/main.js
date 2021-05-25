@@ -17,9 +17,9 @@ const RULES = {
 };
 
 const GRIDDIMENSIONS ={
-	x: 23,
-	y: 23,
-	z: 23,
+	x: 10,
+	y: 10,
+	z: 10,
 }
 
 //Setup the 3 main components: scene, camera, renderer
@@ -81,7 +81,6 @@ function animate() {
 	if(clock.getElapsedTime() >= updateTime) {
 		changeState(GRID, RULES, updateQueue);
 		updateVisualGrid(updateQueue);
-		console.log(updateQueue);
 		clock.stop();
 		clock.start();
 	}
@@ -97,10 +96,15 @@ function updateVisualGrid(updateQueue){
 
 function main() {
 	setScene();
-	GRID = RandomState(GRIDDIMENSIONS.x, GRIDDIMENSIONS.y, GRIDDIMENSIONS.z);
-	renderGridHack(GRID);
+	resetGrid();
 	clock.start(); // start the clock before animating/changing state
 	animate();
+}
+
+function resetGrid(){
+	visualGrid.clear();
+	GRID = RandomState(GRIDDIMENSIONS.x, GRIDDIMENSIONS.y, GRIDDIMENSIONS.z);
+	renderGridHack(GRID);
 }
 main();
 
@@ -166,14 +170,20 @@ var resizeScene = function () {
 };
 window.addEventListener("resize", resizeScene);
 
+var obj = {
+	reset: function(){
+		resetGrid();
+	}
+}
 const gui = new GUI()
 const ruleFolder = gui.addFolder("Rule")
 ruleFolder.add(RULES, "numBorn", -1, 6, 1)
 ruleFolder.add(RULES, "numSurvive", -1, 6, 1)
 ruleFolder.open()
 const gridFolder = gui.addFolder("Grid")
-gridFolder.add(GRIDDIMENSIONS, "x", 10, 100, 5)
-gridFolder.add(GRIDDIMENSIONS, "y", 10, 100, 5)
-gridFolder.add(GRIDDIMENSIONS, "z", 10, 100, 5)
+gridFolder.add(GRIDDIMENSIONS, "x", 0, 50, 1)
+gridFolder.add(GRIDDIMENSIONS, "y", 0, 50, 1)
+gridFolder.add(GRIDDIMENSIONS, "z", 0, 50, 1)
+gridFolder.add(obj, 'reset')
 gridFolder.open()
 
