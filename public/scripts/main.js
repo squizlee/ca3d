@@ -15,6 +15,12 @@ const RULES = {
 	numBorn: 1,
 };
 
+const GRIDDIMENSIONS ={
+	x: 23,
+	y: 23,
+	z: 23,
+}
+
 //Setup the 3 main components: scene, camera, renderer
 function setScene() {
 	scene = new THREE.Scene();
@@ -31,8 +37,17 @@ function setScene() {
 	// HELPER
 	const axesHelper = new THREE.AxesHelper(8);
 	scene.add(axesHelper);
-
 	scene.add(visualGrid);
+	
+	// draw bounding box
+    var geoBoundBox = new THREE.BoxGeometry(GRIDDIMENSIONS.x, GRIDDIMENSIONS.y, GRIDDIMENSIONS.z);
+    var matWire = new THREE.MeshBasicMaterial({
+        color: 0x444444
+    });
+    var BoundaryBox = new THREE.Mesh(geoBoundBox, matWire);
+    var BoundaryEdge = new THREE.BoxHelper(BoundaryBox, 0x444444);
+    scene.add(BoundaryEdge);
+	
 }
 
 // position is a vector3
@@ -76,7 +91,7 @@ function updateVisualGrid(updateQueue){
 
 function main() {
 	setScene();
-	GRID = RandomState(23, 23, 23);
+	const GRID = RandomState(GRIDDIMENSIONS.x, GRIDDIMENSIONS.y, GRIDDIMENSIONS.z);
 	renderGridHack(GRID);
 	clock.start(); // start the clock before animating/changing state
 	animate();

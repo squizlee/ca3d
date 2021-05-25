@@ -3,7 +3,7 @@
 function createCubeState(num_neighbors = 0, state = 0) {
 	const CUBE = {
 		num_neighbors: num_neighbors, // no neighbors by default
-		state: state, // dead by default
+		state: state, // dead by default, 0 == dead, > 0 == alive
 	};
 	
 	return CUBE;
