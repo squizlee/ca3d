@@ -36,8 +36,17 @@ function setScene() {
 	// HELPER
 	const axesHelper = new THREE.AxesHelper(8);
 	scene.add(axesHelper);
-
 	scene.add(visualGrid);
+	
+	// draw bounding box
+    var geoBoundBox = new THREE.BoxGeometry(GRIDDIMENSIONS.x, GRIDDIMENSIONS.y, GRIDDIMENSIONS.z);
+    var matWire = new THREE.MeshBasicMaterial({
+        color: 0x444444
+    });
+    var BoundaryBox = new THREE.Mesh(geoBoundBox, matWire);
+    var BoundaryEdge = new THREE.BoxHelper(BoundaryBox, 0x444444);
+    scene.add(BoundaryEdge);
+	
 }
 
 // position is a vector3
