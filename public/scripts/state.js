@@ -3,7 +3,7 @@
 function createCubeState(num_neighbors = 0, state = 0) {
 	const CUBE = {
 		num_neighbors: num_neighbors, // no neighbors by default
-		state: state, // dead by default
+		state: state, // dead by default, 0 == dead, > 0 == alive
 	};
 	
 	return CUBE;
@@ -113,6 +113,50 @@ function updateNumNeighbors(GRID){
 }
 
 /**
+ * 
+ * @param {*} GRID 3D array of cubes 
+ * @param {Number} increment either -1 or 1 depending on desire of update
+ */
+function mutateNeighbours(GRID, increment){
+	const depthNum = GRID.length;
+	const rowNum  = GRID[0].length;
+	const colNum  = GRID[0][0].length;
+	GRID.forEach((chunk, cindex) => {
+		chunk.forEach((row, rindex) => {
+			row.forEach((col, index) => {
+				// check left 
+				if(index != 0)
+				{
+					row[index - 1].num_neighbors += increment;
+				}
+				// check right
+				if(index != colNum - 1){
+					row[index + 1].num_neighbors += increment;
+				}
+
+				// check top
+				if(rindex != rowNum - 1) {
+					chunk[rindex + 1][index].num_neighbors += increment;
+				}
+				// check bottom
+				if(rindex != 0) {
+					chunk[rindex - 1][index].num_neighbors += increment;
+				}
+				// check front
+				if(cindex != depthNum - 1) {
+					GRID[cindex + 1][rindex][index].num_neighbors += increment;
+				}
+				// check back
+				if(cindex != 0) {
+					GRID[cindex - 1][rindex][index].num_neighbors += increment;
+				}
+
+			});
+		});
+	});
+}
+
+/**
  * return the chunk by memory
  * @param {Array} GRID the state management grid
  * @param {Number} chunk n-chunk to grab
@@ -122,4 +166,4 @@ function getChunk(GRID, chunk) {
 	return GRID[chunk];
 }
 
-export { RandomState, getChunk};
+export { RandomState, getChunk, mutateNeighbours};
