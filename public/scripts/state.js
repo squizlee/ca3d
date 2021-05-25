@@ -16,7 +16,7 @@ function createCubeState(num_neighbors = 0, state = 0, vGridIndex = 0) {
  * @param {Number} column number of columns
  * @param {Number} depth depth of grid
  */
-function RandomState(row = 2, column = 2, depth = 2) {
+function RandomState(column = 2, row = 2, depth = 2) {
 	let GRID = [];
 
 	// use these to randomly create state for the cubes 
