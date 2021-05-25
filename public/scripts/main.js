@@ -42,6 +42,7 @@ function setScene() {
 	scene.add(axesHelper);
 	scene.add(visualGrid);
 
+	// Boundary Box
 	createBoundaryBox();
 	scene.add(boundaryEdge);
 }
@@ -56,6 +57,7 @@ function createBoundaryBox() {
 	boundaryEdge = new THREE.BoxHelper(boundaryBox, 0x444444);
 }
 
+// Resets the bounding box to be scaled to the grid size
 function resetBoundaryBox() {
 	boundaryBox.scale.x = GRIDDIMENSIONS.x;
 	boundaryBox.scale.y = GRIDDIMENSIONS.y;
@@ -85,6 +87,7 @@ function createCube(position, parameters) {
 
 }
 
+// Called every frame
 function animate() {
 	renderer.render(scene, camera);
 	controls.update();
@@ -183,16 +186,20 @@ var resizeScene = function () {
 };
 window.addEventListener("resize", resizeScene);
 
+// Reset grid button
 var obj = {
 	resetGrid: function () {
 		resetGrid();
 	}
 }
+
+// --- UI elements ---
 const gui = new GUI()
 const ruleFolder = gui.addFolder("Rule")
 ruleFolder.add(RULES, "numBorn", -1, 6, 1)
 ruleFolder.add(RULES, "numSurvive", -1, 6, 1)
 ruleFolder.open()
+
 const gridFolder = gui.addFolder("Grid")
 gridFolder.add(GRIDDIMENSIONS, "x", 0, 50, 1)
 gridFolder.add(GRIDDIMENSIONS, "y", 0, 50, 1)
