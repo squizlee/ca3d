@@ -14,6 +14,12 @@ const RULES = {
 	numBorn: 1,
 };
 
+const GRIDDIMENSIONS ={
+	x: 23,
+	y: 23,
+	z: 23,
+}
+
 //Setup the 3 main components: scene, camera, renderer
 function setScene() {
 	scene = new THREE.Scene();
@@ -70,7 +76,7 @@ function animate() {
 
 function main() {
 	setScene();
-	const GRID = RandomState(23, 23, 23);
+	const GRID = RandomState(GRIDDIMENSIONS.x, GRIDDIMENSIONS.y, GRIDDIMENSIONS.z);
 	renderGridHack(GRID);
 	clock.start(); // start the clock before animating/changing state
 	animate();
