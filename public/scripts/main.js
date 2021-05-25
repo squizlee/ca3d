@@ -102,7 +102,7 @@ function renderGridHack(GRID) {
 }
 
 const gui = new GUI()
-const ruleFolder = gui.addfolder("Rule")
+const ruleFolder = gui.addFolder("Rule")
 ruleFolder.add(RULES, "numBorn", -1, 6, 1)
 ruleFolder.add(RULES, "numSurvive", -1, 6, 1)
 ruleFolder.open()
