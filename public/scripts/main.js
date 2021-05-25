@@ -73,7 +73,7 @@ function createCube(position, parameters) {
 	cube.matrixAutoUpdate = false; // experimental: the cubes do not change position/rotation/quarternion/scale
 	visualGrid.add(cube);
 	if (position) {
-		cube.position.set(position.x, position.y, position.z);
+		cube.position.set(position.x - GRIDDIMENSIONS.x * 0.5 + 0.5, position.y - GRIDDIMENSIONS.y * 0.5 + 0.5, position.z - GRIDDIMENSIONS.z * 0.5 + 0.5);
 		cube.updateMatrix();
 	}
 
