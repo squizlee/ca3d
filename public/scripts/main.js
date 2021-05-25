@@ -1,6 +1,7 @@
 import * as THREE from "../lib/three.module.js";
 import { OrbitControls } from "../lib/OrbitControls.js";
 import { RandomState, getChunk} from "./state.js";
+import { GUI } from "../lib/dat.gui.module.js";
 
 let scene;
 let camera;
