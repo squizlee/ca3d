@@ -171,7 +171,7 @@ var resizeScene = function () {
 window.addEventListener("resize", resizeScene);
 
 var obj = {
-	reset: function(){
+	resetGrid: function(){
 		resetGrid();
 	}
 }
@@ -184,6 +184,6 @@ const gridFolder = gui.addFolder("Grid")
 gridFolder.add(GRIDDIMENSIONS, "x", 0, 50, 1)
 gridFolder.add(GRIDDIMENSIONS, "y", 0, 50, 1)
 gridFolder.add(GRIDDIMENSIONS, "z", 0, 50, 1)
-gridFolder.add(obj, 'reset')
+gridFolder.add(obj, 'resetGrid')
 gridFolder.open()
 
