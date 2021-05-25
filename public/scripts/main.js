@@ -101,6 +101,12 @@ function renderGridHack(GRID) {
 	});
 }
 
+const gui = new GUI()
+const ruleFolder = gui.addfolder("Rule")
+ruleFolder.add(RULES, "numBorn", -1, 6, 1)
+ruleFolder.add(RULES, "numSurvive", -1, 6, 1)
+ruleFolder.open()
+
 //Resize the scene and update the camera aspect to the screen ration
 var resizeScene = function () {
 	var width = window.innerWidth;
