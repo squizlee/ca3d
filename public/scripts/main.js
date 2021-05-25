@@ -10,6 +10,8 @@ let controls;
 let visualGrid; // contains all cubes on the screen
 let GRID; // contains the state for the entire automata
 let clock;
+let boundaryBox;
+let boundaryEdge; // boundaryBox
 
 const RULES = {
 	numSurvive: 2,
@@ -40,15 +42,25 @@ function setScene() {
 	scene.add(axesHelper);
 	scene.add(visualGrid);
 	
+	createBoundaryBox();
+	scene.add(boundaryEdge);
+}
+
+function createBoundaryBox(){
 	// draw bounding box
-    var geoBoundBox = new THREE.BoxGeometry(GRIDDIMENSIONS.x, GRIDDIMENSIONS.y, GRIDDIMENSIONS.z);
+    var geoBoundBox = new THREE.BoxGeometry(1, 1, 1);
     var matWire = new THREE.MeshBasicMaterial({
         color: 0x444444
     });
-    var BoundaryBox = new THREE.Mesh(geoBoundBox, matWire);
-    var BoundaryEdge = new THREE.BoxHelper(BoundaryBox, 0x444444);
-    scene.add(BoundaryEdge);
-	
+ 	boundaryBox = new THREE.Mesh(geoBoundBox, matWire);
+    boundaryEdge = new THREE.BoxHelper(boundaryBox, 0x444444);
+}
+
+function resetBoundaryBox() {
+	boundaryBox.scale.x = GRIDDIMENSIONS.x;
+	boundaryBox.scale.y = GRIDDIMENSIONS.y;
+	boundaryBox.scale.z = GRIDDIMENSIONS.z;
+	boundaryEdge.update();
 }
 
 // position is a vector3
@@ -103,6 +115,7 @@ function main() {
 
 function resetGrid(){
 	visualGrid.clear();
+	resetBoundaryBox();
 	GRID = RandomState(GRIDDIMENSIONS.x, GRIDDIMENSIONS.y, GRIDDIMENSIONS.z);
 	renderGridHack(GRID);
 }
