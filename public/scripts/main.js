@@ -38,7 +38,7 @@ function setScene() {
 // position is a vector3
 function createCube(position, parameters) {
 	const geometry = new THREE.BoxGeometry();
-	const material = new THREE.MeshBasicMaterial({ wireframe: true});
+	const material = new THREE.MeshBasicMaterial({ wireframe: false});
 	const cube = new THREE.Mesh(geometry, material);
 	cube.matrixAutoUpdate = false; // experimental: the cubes do not change position/rotation/quarternion/scale
 	visualGrid.add(cube);
@@ -64,6 +64,8 @@ function animate() {
 	let updateQueue = []; // this queue will maintain a list of cubes to update visually (flip the visibility flag)
 	if(clock.getElapsedTime() >= updateTime) {
 		changeState(GRID, RULES, updateQueue);
+		updateVisualGrid(updateQueue);
+		console.log(updateQueue);
 		clock.stop();
 		clock.start();
 	}
@@ -71,12 +73,15 @@ function animate() {
 }
 
 function updateVisualGrid(updateQueue){
-	return;
+	updateQueue.forEach((cube) => {
+		visualGrid.children[cube.vGridIndex].visible = !visualGrid.children[cube.vGridIndex].visible;
+	});
+	updateQueue = [];
 }
 
 function main() {
 	setScene();
-	GRID = RandomState(23, 23, 23);
+	GRID = RandomState(5, 5, 5);
 	renderGridHack(GRID);
 	clock.start(); // start the clock before animating/changing state
 	animate();
@@ -117,6 +122,7 @@ function changeState(GRID, RULES, updateQueue) {
 
 function renderGridHack(GRID) {
 	let position = new THREE.Vector3();
+	let numRendered = 0;
 	GRID.forEach((chunk, chunkLayer) => {
 		chunk.forEach((row, rowNum) => {
 			row.forEach((columnEntry, index) => {
@@ -125,6 +131,7 @@ function renderGridHack(GRID) {
 					createCube(position, {display: false});
 				}else 
 					createCube(position, {});
+				columnEntry.vGridIndex = numRendered++; // each cube has to maintain the index inside the visual grid to update
 			});
 		});
 	});
