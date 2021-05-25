@@ -97,7 +97,7 @@ function updateVisualGrid(updateQueue){
 
 function main() {
 	setScene();
-	const GRID = RandomState(GRIDDIMENSIONS.x, GRIDDIMENSIONS.y, GRIDDIMENSIONS.z);
+	GRID = RandomState(GRIDDIMENSIONS.x, GRIDDIMENSIONS.y, GRIDDIMENSIONS.z);
 	renderGridHack(GRID);
 	clock.start(); // start the clock before animating/changing state
 	animate();
