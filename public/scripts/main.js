@@ -1,10 +1,15 @@
-import * as THREE from "../lib/three.module.js";
+//import * as THREE from "../lib/three.module.js";
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.127/build/three.module.js";
 import { OrbitControls } from "../lib/OrbitControls.js";
 import { RandomState, getChunk, mutateNeighbours } from "./state.js";
 import { GUI } from "../lib/dat.gui.module.js";
+import { EffectComposer } from "https://cdn.jsdelivr.net/npm/three@0.127/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "https://cdn.jsdelivr.net/npm/three@0.127/examples/jsm/postprocessing/RenderPass.js";
+import { SSAOPass } from "https://cdn.jsdelivr.net/npm/three@0.127/examples/jsm/postprocessing/SSAOPass.js";
 
 let scene;
 let camera;
+let cameralight, ambientlight;
 let renderer;
 let controls;
 let visualGrid; // contains all cubes on the screen
@@ -12,6 +17,7 @@ let GRID; // contains the state for the entire automata
 let clock;
 let boundaryBox;
 let boundaryEdge; // boundaryBox
+let composer;
 
 const RULES = {
 	numSurvive: 2,
@@ -29,13 +35,21 @@ function setScene() {
 	scene = new THREE.Scene();
 	let ratio = window.innerWidth / window.innerHeight;
 	camera = new THREE.PerspectiveCamera(75, ratio, 0.1, 200);
-	renderer = new THREE.WebGLRenderer({ powerPreference: "high-performance" });
+	addLight();
+	renderer = new THREE.WebGLRenderer({ powerPreference: "high-performance", antialias: true});
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 	controls = new OrbitControls(camera, renderer.domElement);
 	camera.position.set(0.0, 0.0, 20);
 	visualGrid = new THREE.Group();
 
+	// Effect and Render passes
+	composer = new EffectComposer(renderer);
+	composer.addPass(new RenderPass(scene, camera));
+	var SSAO = new SSAOPass(scene, camera, 512, 512);
+	composer.addPass(SSAO);
+	
+	scene.add(camera);
 	clock = new THREE.Clock(false);
 	// HELPER
 	const axesHelper = new THREE.AxesHelper(8);
@@ -45,6 +59,14 @@ function setScene() {
 	// Boundary Box
 	createBoundaryBox();
 	scene.add(boundaryEdge);
+}
+
+function addLight() {
+    cameralight = new THREE.PointLight(new THREE.Color(1, 1, 1), 0.7);
+    cameralight.castShadow = true;
+    ambientlight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 0.3);
+    camera.add(cameralight);
+	scene.add(ambientlight);
 }
 
 function createBoundaryBox() {
@@ -68,7 +90,8 @@ function resetBoundaryBox() {
 // position is a vector3
 function createCube(position, parameters) {
 	const geometry = new THREE.BoxGeometry();
-	const material = new THREE.MeshBasicMaterial({ wireframe: false });
+	const material = new THREE.MeshPhongMaterial({ wireframe: false });
+	//const material = ssaoMaterial;
 	const cube = new THREE.Mesh(geometry, material);
 	cube.matrixAutoUpdate = false; // experimental: the cubes do not change position/rotation/quarternion/scale
 	visualGrid.add(cube);
@@ -83,13 +106,13 @@ function createCube(position, parameters) {
 
 	if (position.x == 0 && position.y == 0 && position.z == 0) {
 		cube.material.color.setHex(0xff0000);
-	}
+	} 
 
 }
 
 // Called every frame
 function animate() {
-	renderer.render(scene, camera);
+	composer.render(); // Replaces renderer.render()
 	controls.update();
 	const updateTime = 1; // how often to update in seconds
 	let updateQueue = []; // this queue will maintain a list of cubes to update visually (flip the visibility flag)
