@@ -1,12 +1,11 @@
 //import * as THREE from "../lib/three.module.js";
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.127/build/three.module.js";
 import { OrbitControls } from "../lib/OrbitControls.js";
 import { RandomState, getChunk, mutateNeighbours } from "./state.js";
 import { GUI } from "../lib/dat.gui.module.js";
-import { EffectComposer } from "https://cdn.jsdelivr.net/npm/three@0.122/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "https://cdn.jsdelivr.net/npm/three@0.122/examples/jsm/postprocessing/RenderPass.js";
-import { SSAOPass } from "https://cdn.jsdelivr.net/npm/three@0.122/examples/jsm/postprocessing/SSAOPass.js";
-
+import { EffectComposer } from "https://cdn.jsdelivr.net/npm/three@0.127/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "https://cdn.jsdelivr.net/npm/three@0.127/examples/jsm/postprocessing/RenderPass.js";
+import { SSAOPass } from "https://cdn.jsdelivr.net/npm/three@0.127/examples/jsm/postprocessing/SSAOPass.js";
 
 let scene;
 let camera;
@@ -44,6 +43,7 @@ function setScene() {
 	camera.position.set(0.0, 0.0, 20);
 	visualGrid = new THREE.Group();
 
+	// Effect and Render passes
 	composer = new EffectComposer(renderer);
 	composer.addPass(new RenderPass(scene, camera));
 	var SSAO = new SSAOPass(scene, camera, 512, 512);
@@ -104,16 +104,15 @@ function createCube(position, parameters) {
 		cube.visible = false;
 	}
 
-	/* if (position.x == 0 && position.y == 0 && position.z == 0) {
+	if (position.x == 0 && position.y == 0 && position.z == 0) {
 		cube.material.color.setHex(0xff0000);
-	} */
+	} 
 
 }
 
 // Called every frame
 function animate() {
-	//renderer.render(scene, camera);
-	composer.render();
+	composer.render(); // Replaces renderer.render()
 	controls.update();
 	const updateTime = 1; // how often to update in seconds
 	let updateQueue = []; // this queue will maintain a list of cubes to update visually (flip the visibility flag)
@@ -141,11 +140,7 @@ function main() {
 }
 
 function resetGrid() {
-	//visualGrid.clear();
-	visualGrid.children.forEach(cube => {
-		scene.remove(cube); 
-		visualGrid.remove(cube);	
-	});
+	visualGrid.clear();
 	resetBoundaryBox();
 	GRID = RandomState(GRIDDIMENSIONS.x, GRIDDIMENSIONS.y, GRIDDIMENSIONS.z);
 	renderGridHack(GRID);
