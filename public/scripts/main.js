@@ -119,7 +119,8 @@ function animate() {
 	if (clock.getElapsedTime() >= updateTime) {
 		changeState(GRID, RULES, updateQueue);
 		updateVisualGrid(updateQueue);
-		clock.stop();
+		// reset clock for timer
+		clock.stop(); 
 		clock.start();
 	}
 	requestAnimationFrame(animate);
@@ -159,13 +160,13 @@ function changeState(GRID, RULES, updateQueue) {
 				if (cube.state === 1) {
 					if (cube.num_neighbors < numSurvive) {
 						updateQueue.push(cube); // push it to queue to flip the state
-						mutateNeighbours(GRID, -1); // deincrement surrounding neighbor count
+						mutateNeighbours(GRID, -1, chunkLayer, rindex, index); // deincrement surrounding neighbor count
 					}
 					// birth?
-				} else {
+				} else if(cube.state === 0) {
 					if (cube.num_neighbors >= numBorn) {
 						updateQueue.push(cube); // push to the queue to flip the state
-						mutateNeighbours(GRID, 1); // increment the surrounding neighbor count
+						mutateNeighbours(GRID, 1, chunkLayer, rindex, index); // increment the surrounding neighbor count
 					}
 				}
 			});
@@ -194,6 +195,7 @@ function renderGridHack(GRID) {
 			});
 		});
 	});
+	console.log(GRID);
 	console.log("VISUAL GRID", visualGrid);
 }
 

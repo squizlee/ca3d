@@ -1,4 +1,5 @@
 // STATE MANAGEMENT
+let test = 0;
 
 function createCubeState(num_neighbors = 0, state = 0, vGridIndex = 0) {
 	const CUBE = {
@@ -118,43 +119,39 @@ function updateNumNeighbors(GRID){
  * @param {*} GRID 3D array of cubes 
  * @param {Number} increment either -1 or 1 depending on desire of update
  */
-function mutateNeighbours(GRID, increment){
+function mutateNeighbours(GRID, increment, cindex, rindex, index){
 	const depthNum = GRID.length;
 	const rowNum  = GRID[0].length;
 	const colNum  = GRID[0][0].length;
-	GRID.forEach((chunk, cindex) => {
-		chunk.forEach((row, rindex) => {
-			row.forEach((col, index) => {
-				// check left 
-				if(index != 0)
-				{
-					row[index - 1].num_neighbors += increment;
-				}
-				// check right
-				if(index != colNum - 1){
-					row[index + 1].num_neighbors += increment;
-				}
 
-				// check top
-				if(rindex != rowNum - 1) {
-					chunk[rindex + 1][index].num_neighbors += increment;
-				}
-				// check bottom
-				if(rindex != 0) {
-					chunk[rindex - 1][index].num_neighbors += increment;
-				}
-				// check front
-				if(cindex != depthNum - 1) {
-					GRID[cindex + 1][rindex][index].num_neighbors += increment;
-				}
-				// check back
-				if(cindex != 0) {
-					GRID[cindex - 1][rindex][index].num_neighbors += increment;
-				}
 
-			});
-		});
-	});
+	// check left 
+	if(index != 0)
+	{
+		GRID[cindex][rindex][index - 1].num_neighbors += increment;
+	}
+	// check right
+	if(index != colNum - 1){
+		GRID[cindex][rindex][index + 1].num_neighbors += increment;
+	}
+
+	// check top
+	if(rindex != rowNum - 1) {
+		GRID[cindex][rindex + 1][index].num_neighbors += increment;
+	}
+	// check bottom
+	if(rindex != 0) {
+		GRID[cindex][rindex - 1][index].num_neighbors += increment;
+	}
+	// check front
+	if(cindex != depthNum - 1) {
+		GRID[cindex + 1][rindex][index].num_neighbors += increment;
+	}
+	// check back
+	if(cindex != 0) {
+		GRID[cindex - 1][rindex][index].num_neighbors += increment;
+	}
+
 }
 
 /**
