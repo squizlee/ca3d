@@ -25,9 +25,13 @@ const RULES = {
 };
 
 const GRIDDIMENSIONS = {
-	x: 10,
-	y: 10,
-	z: 10,
+	x: 8,
+	y: 8,
+	z: 8,
+}
+
+const MISC = { 
+	color: false
 }
 
 //Setup the 3 main components: scene, camera, renderer
@@ -90,7 +94,7 @@ function resetBoundaryBox() {
 // position is a vector3
 function createCube(position, parameters) {
 	const geometry = new THREE.BoxGeometry();
-	const material = new THREE.MeshPhongMaterial({ wireframe: false });
+	const material = new THREE.MeshPhongMaterial({ wireframe: false});
 	//const material = ssaoMaterial;
 	const cube = new THREE.Mesh(geometry, material);
 	cube.matrixAutoUpdate = false; // experimental: the cubes do not change position/rotation/quarternion/scale
@@ -104,9 +108,11 @@ function createCube(position, parameters) {
 		cube.visible = false;
 	}
 
+	/*
 	if (position.x == 0 && position.y == 0 && position.z == 0) {
 		cube.material.color.setHex(0xff0000);
 	} 
+	*/
 
 }
 
@@ -123,12 +129,16 @@ function animate() {
 		clock.stop(); 
 		clock.start();
 	}
+
 	requestAnimationFrame(animate);
 }
 
 function updateVisualGrid(updateQueue) {
+
 	updateQueue.forEach((cube) => {
 		visualGrid.children[cube.vGridIndex].visible = !visualGrid.children[cube.vGridIndex].visible;
+		if(MISC.color)
+			visualGrid.children[cube.vGridIndex].material.color.setHex(cube.vGridIndex * 0xfffff );
 	});
 	updateQueue = [];
 }
@@ -160,14 +170,16 @@ function changeState(GRID, RULES, updateQueue) {
 				if (cube.state === 1) {
 					if (cube.num_neighbors < numSurvive) {
 						updateQueue.push(cube); // push it to queue to flip the state
-						mutateNeighbours(GRID, -1, chunkLayer, rindex, index); // deincrement surrounding neighbor count
+						//mutateNeighbours(GRID, -1, chunkLayer, rindex, index); // deincrement surrounding neighbor count
 					}
+					cube.num_neighbors = Math.floor(Math.random() * 6);
 					// birth?
 				} else if(cube.state === 0) {
 					if (cube.num_neighbors >= numBorn) {
 						updateQueue.push(cube); // push to the queue to flip the state
-						mutateNeighbours(GRID, 1, chunkLayer, rindex, index); // increment the surrounding neighbor count
+						//mutateNeighbours(GRID, 1, chunkLayer, rindex, index); // increment the surrounding neighbor count
 					}
+					cube.num_neighbors = Math.floor(Math.random() * 6);
 				}
 			});
 		});
@@ -195,8 +207,6 @@ function renderGridHack(GRID) {
 			});
 		});
 	});
-	console.log(GRID);
-	console.log("VISUAL GRID", visualGrid);
 }
 
 //Resize the scene and update the camera aspect to the screen ration
@@ -225,10 +235,17 @@ ruleFolder.add(RULES, "numBorn", -1, 6, 1)
 ruleFolder.add(RULES, "numSurvive", -1, 6, 1)
 ruleFolder.open()
 
+const miscFolder = gui.addFolder("Misc");
+miscFolder.add(MISC, "color");
+miscFolder.open(MISC, "color");
+
 const gridFolder = gui.addFolder("Grid")
 gridFolder.add(GRIDDIMENSIONS, "x", 0, 50, 1)
 gridFolder.add(GRIDDIMENSIONS, "y", 0, 50, 1)
 gridFolder.add(GRIDDIMENSIONS, "z", 0, 50, 1)
 gridFolder.add(obj, 'resetGrid')
 gridFolder.open()
+
+
+
 

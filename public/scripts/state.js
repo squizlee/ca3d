@@ -101,17 +101,11 @@ function updateNumNeighbors(GRID){
 				if(cindex != 0) {
 					if(GRID[cindex - 1][rindex][index].state == 1) ++num;
 				}
-
-				if(num === 6){
-					console.log("Don't render me!");
-				}
-
 				// update
 				col.num_neighbors = num;
 			});
 		});
 	});
-
 }
 
 /**
@@ -123,7 +117,6 @@ function mutateNeighbours(GRID, increment, cindex, rindex, index){
 	const depthNum = GRID.length;
 	const rowNum  = GRID[0].length;
 	const colNum  = GRID[0][0].length;
-
 
 	// check left 
 	if(index != 0)
