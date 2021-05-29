@@ -18,6 +18,7 @@ let clock;
 let boundaryBox;
 let boundaryEdge; // boundaryBox
 let composer;
+let SSAO;
 
 const RULES = {
 	numSurvive: 2,
@@ -46,7 +47,7 @@ function setScene() {
 	// Effect and Render passes
 	composer = new EffectComposer(renderer);
 	composer.addPass(new RenderPass(scene, camera));
-	var SSAO = new SSAOPass(scene, camera, 512, 512);
+	SSAO = new SSAOPass(scene, camera, 512, 512);
 	composer.addPass(SSAO);
 	
 	scene.add(camera);
@@ -217,6 +218,16 @@ var obj = {
 }
 
 // --- UI elements ---
+// var params = function(){
+// 	this.kernelRadius = 8;
+// 	this.kernelSize = 32;
+// 	this.minDistance = 0.005;
+// 	this.maxDistance = 0.1;
+// 	this.width = 512;
+// 	this.height = 512;
+// }
+
+// const text = new params();
 const gui = new GUI()
 const ruleFolder = gui.addFolder("Rule")
 ruleFolder.add(RULES, "numBorn", -1, 6, 1)
@@ -229,4 +240,22 @@ gridFolder.add(GRIDDIMENSIONS, "y", 0, 50, 1)
 gridFolder.add(GRIDDIMENSIONS, "z", 0, 50, 1)
 gridFolder.add(obj, 'resetGrid')
 gridFolder.open()
+
+// const SSAOFolder = gui.addFolder("SSAO");
+// SSAOFolder.add(text, 'kernelRadius', 1, 20, 0.1).onChange(UpdateSSAO);
+// SSAOFolder.add(text, 'kernelSize', 1, 124, 1).onChange(UpdateSSAO);
+// SSAOFolder.add(text, 'minDistance', 0.001, 5, 0.001).onChange(UpdateSSAO);
+// SSAOFolder.add(text, 'maxDistance', 0.05, 10, 0.5).onChange(UpdateSSAO);
+// SSAOFolder.add(text, 'width', 64, 2516, 2).onChange(UpdateSSAO);
+// SSAOFolder.add(text, 'height', 64, 2516, 2).onChange(UpdateSSAO);
+// SSAOFolder.open();
+
+// var UpdateSSAO = function(){
+// 	SSAO.kernelRadius = text.kernelRadius;
+// 	SSAO.kernelSize = text.kernelSize;
+// 	SSAO.minDistance = text.minDistance;
+// 	SSAO.maxDistance = text.maxDistance;
+// 	SSAO.width = text.width;
+// 	SSAO.height = text.height;
+// }
 
