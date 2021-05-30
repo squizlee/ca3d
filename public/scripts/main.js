@@ -30,8 +30,9 @@ const GRIDDIMENSIONS = {
 	z: 8,
 }
 
-const MISC = { 
-	color: false
+const MISC = {
+	randColor: false,
+	posColor: false
 }
 
 //Setup the 3 main components: scene, camera, renderer
@@ -40,7 +41,7 @@ function setScene() {
 	let ratio = window.innerWidth / window.innerHeight;
 	camera = new THREE.PerspectiveCamera(75, ratio, 0.1, 200);
 	addLight();
-	renderer = new THREE.WebGLRenderer({ powerPreference: "high-performance", antialias: true});
+	renderer = new THREE.WebGLRenderer({ powerPreference: "high-performance", antialias: true });
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 	controls = new OrbitControls(camera, renderer.domElement);
@@ -52,7 +53,7 @@ function setScene() {
 	composer.addPass(new RenderPass(scene, camera));
 	var SSAO = new SSAOPass(scene, camera, 512, 512);
 	composer.addPass(SSAO);
-	
+
 	scene.add(camera);
 	clock = new THREE.Clock(false);
 	// HELPER
@@ -66,10 +67,10 @@ function setScene() {
 }
 
 function addLight() {
-    cameralight = new THREE.PointLight(new THREE.Color(1, 1, 1), 0.7);
-    cameralight.castShadow = true;
-    ambientlight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 0.3);
-    camera.add(cameralight);
+	cameralight = new THREE.PointLight(new THREE.Color(1, 1, 1), 0.7);
+	cameralight.castShadow = true;
+	ambientlight = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 0.3);
+	camera.add(cameralight);
 	scene.add(ambientlight);
 }
 
@@ -94,7 +95,7 @@ function resetBoundaryBox() {
 // position is a vector3
 function createCube(position, parameters) {
 	const geometry = new THREE.BoxGeometry();
-	const material = new THREE.MeshPhongMaterial({ wireframe: false});
+	const material = new THREE.MeshPhongMaterial({ wireframe: false });
 	//const material = ssaoMaterial;
 	const cube = new THREE.Mesh(geometry, material);
 	cube.matrixAutoUpdate = false; // experimental: the cubes do not change position/rotation/quarternion/scale
@@ -126,7 +127,7 @@ function animate() {
 		changeState(GRID, RULES, updateQueue);
 		updateVisualGrid(updateQueue);
 		// reset clock for timer
-		clock.stop(); 
+		clock.stop();
 		clock.start();
 	}
 
@@ -137,8 +138,6 @@ function updateVisualGrid(updateQueue) {
 
 	updateQueue.forEach((cube) => {
 		visualGrid.children[cube.vGridIndex].visible = !visualGrid.children[cube.vGridIndex].visible;
-		if(MISC.color)
-			visualGrid.children[cube.vGridIndex].material.color.setHex(cube.vGridIndex * 0xfffff );
 	});
 	updateQueue = [];
 }
@@ -155,6 +154,7 @@ function resetGrid() {
 	resetBoundaryBox();
 	GRID = RandomState(GRIDDIMENSIONS.x, GRIDDIMENSIONS.y, GRIDDIMENSIONS.z);
 	renderGridHack(GRID);
+	updateCubeColour();
 }
 main();
 
@@ -174,7 +174,7 @@ function changeState(GRID, RULES, updateQueue) {
 					}
 					cube.num_neighbors = Math.floor(Math.random() * 6);
 					// birth?
-				} else if(cube.state === 0) {
+				} else if (cube.state === 0) {
 					if (cube.num_neighbors >= numBorn) {
 						updateQueue.push(cube); // push to the queue to flip the state
 						//mutateNeighbours(GRID, 1, chunkLayer, rindex, index); // increment the surrounding neighbor count
@@ -209,6 +209,25 @@ function renderGridHack(GRID) {
 	});
 }
 
+function updateCubeColour() {
+	if(MISC.posColor){
+		visualGrid.children.forEach(cube => cube.material.color.setRGB(cube.position.x / GRIDDIMENSIONS.x, cube.position.y / GRIDDIMENSIONS.y, cube.position.z / GRIDDIMENSIONS.z));
+	} else{
+		visualGrid.children.forEach((cube, index) => cube.material.color.setHex(index * 0xfffff));
+	}
+	
+	/* GRID.forEach((chunk, chunkLayer) => {
+		chunk.forEach((row, rindex) => {
+			row.forEach((cube, index) => {
+				if (MISC.posColor) {
+					cube.material.color.setRGB(cube.position.x / GRIDDIMENSIONS.x, cube.position.y / GRIDDIMENSIONS.y, cube.position.z / GRIDDIMENSIONS.z);
+				} else {
+					cube.material.color.setHex(cube.vGridIndex * 0xfffff);
+				}
+			});
+		});
+	});	 */
+}
 //Resize the scene and update the camera aspect to the screen ration
 var resizeScene = function () {
 	var width = window.innerWidth;
@@ -236,7 +255,8 @@ ruleFolder.add(RULES, "numSurvive", -1, 6, 1)
 ruleFolder.open()
 
 const miscFolder = gui.addFolder("Misc");
-miscFolder.add(MISC, "color");
+// miscFolder.add(MISC, "randColor");
+miscFolder.add(MISC, "posColor").onChange(updateCubeColour);
 miscFolder.open(MISC, "color");
 
 const gridFolder = gui.addFolder("Grid")
