@@ -20,8 +20,8 @@ let boundaryEdge; // boundaryBox
 let composer;
 
 const RULES = {
-	numSurvive: 2,
-	numBorn: 1,
+	numSurvive: 6,
+	numBorn: 2,
 };
 
 const GRIDDIMENSIONS = {
@@ -129,15 +129,21 @@ function animate() {
 		// reset clock for timer
 		clock.stop();
 		clock.start();
+		//console.log(GRID);
 	}
 
 	requestAnimationFrame(animate);
 }
 
 function updateVisualGrid(updateQueue) {
-
+	console.log(updateQueue);
 	updateQueue.forEach((cube) => {
-		visualGrid.children[cube.vGridIndex].visible = !visualGrid.children[cube.vGridIndex].visible;
+		//visualGrid.children[cube.vGridIndex].visible = !visualGrid.children[cube.vGridIndex].visible;
+		let isVisible = visualGrid.children[cube.vGridIndex].visible ;
+		visualGrid.children[cube.vGridIndex].visible = isVisible ? false : true;
+		// if alive & neighbours >= 6 (but in this case it can't be > 6) invis
+		// if dead invis
+		// if alive & neighbours < 6 visible
 	});
 	updateQueue = [];
 }
@@ -168,18 +174,31 @@ function changeState(GRID, RULES, updateQueue) {
 			row.forEach((cube, index) => {
 				// survive?
 				if (cube.state === 1) {
-					if (cube.num_neighbors < numSurvive) {
-						updateQueue.push(cube); // push it to queue to flip the state
-						//mutateNeighbours(GRID, -1, chunkLayer, rindex, index); // deincrement surrounding neighbor count
+					if (cube.num_neighbors < numSurvive && cube.num_neighbors > 0) {
+						var input = {cube: cube, neighbors: cube.num_neighbors, state: cube.state, vGridIndex: cube.vGridIndex};
+						updateQueue.push(input); // push it to queue to flip the state
+						//console.log(chunkLayer, rindex, index);
+						cube.state = 0;
+						mutateNeighbours(GRID, -1, chunkLayer, rindex, index); // deincrement surrounding neighbor count
+						//console.log(cube.num_neighbors);
+
+						// if (cube.state === 1 && cube.neighbors < 6) {
+						// 	console.log("Rendered SAVED");
+						// 	visualGrid.children[cube.vGridIndex].visible = true;
+						// } else if (cube.state === 0 || cube.state === 1 && cube.neighbors === 6) {
+						// 	console.log("test")
+						// 	visualGrid.children[cube.vGridIndex].visible = false;
+						// }
 					}
-					cube.num_neighbors = Math.floor(Math.random() * 6);
+					//cube.num_neighbors = Math.floor(Math.random() * 6);
 					// birth?
 				} else if (cube.state === 0) {
 					if (cube.num_neighbors >= numBorn) {
 						updateQueue.push(cube); // push to the queue to flip the state
-						//mutateNeighbours(GRID, 1, chunkLayer, rindex, index); // increment the surrounding neighbor count
+						cube.state = 1;
+						mutateNeighbours(GRID, 1, chunkLayer, rindex, index); // increment the surrounding neighbor count
 					}
-					cube.num_neighbors = Math.floor(Math.random() * 6);
+					//cube.num_neighbors = Math.floor(Math.random() * 6);
 				}
 			});
 		});
@@ -215,19 +234,8 @@ function updateCubeColour() {
 	} else{
 		visualGrid.children.forEach((cube, index) => cube.material.color.setHex(index * 0xfffff));
 	}
-	
-	/* GRID.forEach((chunk, chunkLayer) => {
-		chunk.forEach((row, rindex) => {
-			row.forEach((cube, index) => {
-				if (MISC.posColor) {
-					cube.material.color.setRGB(cube.position.x / GRIDDIMENSIONS.x, cube.position.y / GRIDDIMENSIONS.y, cube.position.z / GRIDDIMENSIONS.z);
-				} else {
-					cube.material.color.setHex(cube.vGridIndex * 0xfffff);
-				}
-			});
-		});
-	});	 */
 }
+
 //Resize the scene and update the camera aspect to the screen ration
 var resizeScene = function () {
 	var width = window.innerWidth;
