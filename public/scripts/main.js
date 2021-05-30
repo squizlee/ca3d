@@ -125,7 +125,7 @@ function animate() {
 	let updateQueue = []; // this queue will maintain a list of cubes to update visually (flip the visibility flag)
 	if (clock.getElapsedTime() >= updateTime) {
 		changeState(GRID, RULES, updateQueue);
-		updateVisualGrid(updateQueue);
+		//updateVisualGrid(updateQueue);
 		// reset clock for timer
 		clock.stop();
 		clock.start();
@@ -174,31 +174,35 @@ function changeState(GRID, RULES, updateQueue) {
 			row.forEach((cube, index) => {
 				// survive?
 				if (cube.state === 1) {
+					// if (cube.num_neighbors >= 6 && visualGrid.children[cube.vGridIndex].visible){
+					// 	updateQueue.push(cube);
+					// }
 					if (cube.num_neighbors < numSurvive && cube.num_neighbors > 0) {
-						var input = {cube: cube, neighbors: cube.num_neighbors, state: cube.state, vGridIndex: cube.vGridIndex};
-						updateQueue.push(input); // push it to queue to flip the state
-						//console.log(chunkLayer, rindex, index);
+						//var input = {cube: cube, neighbors: cube.num_neighbors, state: cube.state, vGridIndex: cube.vGridIndex};
+						updateQueue.push(cube); // push it to queue to flip the state
+
 						cube.state = 0;
 						mutateNeighbours(GRID, -1, chunkLayer, rindex, index); // deincrement surrounding neighbor count
 						//console.log(cube.num_neighbors);
-
-						// if (cube.state === 1 && cube.neighbors < 6) {
-						// 	console.log("Rendered SAVED");
-						// 	visualGrid.children[cube.vGridIndex].visible = true;
-						// } else if (cube.state === 0 || cube.state === 1 && cube.neighbors === 6) {
-						// 	console.log("test")
-						// 	visualGrid.children[cube.vGridIndex].visible = false;
-						// }
 					}
-					//cube.num_neighbors = Math.floor(Math.random() * 6);
 					// birth?
 				} else if (cube.state === 0) {
 					if (cube.num_neighbors >= numBorn) {
-						updateQueue.push(cube); // push to the queue to flip the state
+						if(cube.num_neighbors < 6){
+							updateQueue.push(cube); // push to the queue to flip the state
+						}
 						cube.state = 1;
 						mutateNeighbours(GRID, 1, chunkLayer, rindex, index); // increment the surrounding neighbor count
 					}
 					//cube.num_neighbors = Math.floor(Math.random() * 6);
+				}
+				
+				if (cube.state === 1 && cube.num_neighbors < 6) {
+					console.log("Rendered SAVED");
+					visualGrid.children[cube.vGridIndex].visible = true;
+				} else if (cube.state === 0 || (cube.state === 1 && cube.num_neighbors === 6)) {
+					console.log("test")
+					visualGrid.children[cube.vGridIndex].visible = false;
 				}
 			});
 		});
