@@ -32,7 +32,8 @@ const GRIDDIMENSIONS = {
 
 const MISC = {
 	randColor: false,
-	posColor: false
+	posColor: false,
+	UPDATE_TIME: 1,
 }
 
 //Setup the 3 main components: scene, camera, renderer
@@ -121,7 +122,7 @@ function createCube(position, parameters) {
 function animate() {
 	composer.render(); // Replaces renderer.render()
 	controls.update();
-	const updateTime = 1; // how often to update in seconds
+	const updateTime = MISC.UPDATE_TIME; // how often to update in seconds
 	let updateQueue = []; // this queue will maintain a list of cubes to update visually (flip the visibility flag)
 	if (clock.getElapsedTime() >= updateTime) {
 		changeState(GRID, RULES, updateQueue);
@@ -259,6 +260,7 @@ ruleFolder.open()
 const miscFolder = gui.addFolder("Misc");
 // miscFolder.add(MISC, "randColor");
 miscFolder.add(MISC, "posColor").onChange(updateCubeColour);
+miscFolder.add(MISC, "UPDATE_TIME", 0.1, 1, 0.01);
 miscFolder.open(MISC, "color");
 
 const gridFolder = gui.addFolder("Grid")
