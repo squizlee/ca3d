@@ -117,10 +117,6 @@ function createCube(position, parameters) {
 		cube.visible = false;
 	}
 	
-	// if (position.x == 0 && position.y == 0 && position.z == 0) {
-	// 	cube.material.color.setHex(0xff0000);
-	// } 
-	
 }
 
 // Called every frame
@@ -142,12 +138,8 @@ function animate() {
 
 function updateVisualGrid(updateQueue) {
 	updateQueue.forEach((cube) => {
-		//visualGrid.children[cube.vGridIndex].visible = !visualGrid.children[cube.vGridIndex].visible;
 		let isVisible = visualGrid.children[cube.vGridIndex].visible ;
 		visualGrid.children[cube.vGridIndex].visible = isVisible ? false : true;
-		// if alive & neighbours >= 6 (but in this case it can't be > 6) invis
-		// if dead invis
-		// if alive & neighbours < 6 visible
 	});
 	updateQueue = [];
 }
@@ -179,16 +171,9 @@ function changeState(GRID, RULES, updateQueue) {
 				// survive?
 				if (cube.state === 1) {
 					if (cube.num_neighbors < numSurvive) {
-						//var input = {cube: cube, neighbors: cube.num_neighbors, state: cube.state, vGridIndex: cube.vGridIndex};
 						updateQueue.push(cube); // push it to queue to flip the state
 						cube.state = 0;
 						mutateNeighbours(GRID, -1, chunkLayer, rindex, index); // deincrement surrounding neighbor count
-
-						// if (cube.state === 1 && cube.neighbors < 6) {
-						// 	visualGrid.children[cube.vGridIndex].visible = true;
-						// } else if (cube.state === 0 || cube.state === 1 && cube.neighbors === 6) {
-						// 	visualGrid.children[cube.vGridIndex].visible = false;
-						// }
 					}
 					// birth?
 				} else if (cube.state === 0) {

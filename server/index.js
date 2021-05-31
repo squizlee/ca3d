@@ -14,5 +14,5 @@ server.use(express.static(publicDir));
 server.use('../lib/dat.gui.module.js', express.static(path.join(__dirname, '../../node_modules/three/examples/jsm/libs/dat.gui.module.js')));
 
 server.listen(PORT, () => {
-	console.log(`Automata at localhost:${PORT}`);
+	console.log(`Go to your browser, Cellular Automata at localhost:${PORT}`);
 });
