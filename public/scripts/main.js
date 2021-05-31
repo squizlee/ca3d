@@ -129,14 +129,12 @@ function animate() {
 		// reset clock for timer
 		clock.stop();
 		clock.start();
-		//console.log(GRID);
 	}
 
 	requestAnimationFrame(animate);
 }
 
 function updateVisualGrid(updateQueue) {
-	console.log(updateQueue);
 	updateQueue.forEach((cube) => {
 		//visualGrid.children[cube.vGridIndex].visible = !visualGrid.children[cube.vGridIndex].visible;
 		let isVisible = visualGrid.children[cube.vGridIndex].visible ;
@@ -174,19 +172,15 @@ function changeState(GRID, RULES, updateQueue) {
 			row.forEach((cube, index) => {
 				// survive?
 				if (cube.state === 1) {
-					if (cube.num_neighbors < numSurvive && cube.num_neighbors > 0) {
+					if (cube.num_neighbors < numSurvive) {
 						var input = {cube: cube, neighbors: cube.num_neighbors, state: cube.state, vGridIndex: cube.vGridIndex};
 						updateQueue.push(input); // push it to queue to flip the state
-						//console.log(chunkLayer, rindex, index);
 						cube.state = 0;
 						mutateNeighbours(GRID, -1, chunkLayer, rindex, index); // deincrement surrounding neighbor count
-						//console.log(cube.num_neighbors);
 
 						// if (cube.state === 1 && cube.neighbors < 6) {
-						// 	console.log("Rendered SAVED");
 						// 	visualGrid.children[cube.vGridIndex].visible = true;
 						// } else if (cube.state === 0 || cube.state === 1 && cube.neighbors === 6) {
-						// 	console.log("test")
 						// 	visualGrid.children[cube.vGridIndex].visible = false;
 						// }
 					}
@@ -218,7 +212,7 @@ function renderGridHack(GRID) {
 		chunk.forEach((row, rowNum) => {
 			row.forEach((columnEntry, index) => {
 				position.set(index, rowNum, chunkLayer);
-				if (columnEntry.state === 0 || columnEntry.num_neighbors === 6) {
+				if (columnEntry.state === 0) {
 					createCube(position, { display: false });
 				} else
 					createCube(position, {});
@@ -273,7 +267,3 @@ gridFolder.add(GRIDDIMENSIONS, "y", 0, 50, 1)
 gridFolder.add(GRIDDIMENSIONS, "z", 0, 50, 1)
 gridFolder.add(obj, 'resetGrid')
 gridFolder.open()
-
-
-
-
