@@ -97,7 +97,6 @@ function resetBoundaryBox() {
 function createCube(position, parameters) {
 	const geometry = new THREE.BoxGeometry();
 	const material = new THREE.MeshPhongMaterial({ wireframe: false });
-	//const material = ssaoMaterial;
 	const cube = new THREE.Mesh(geometry, material);
 	cube.matrixAutoUpdate = false; // experimental: the cubes do not change position/rotation/quarternion/scale
 	visualGrid.add(cube);
@@ -109,13 +108,11 @@ function createCube(position, parameters) {
 	if (parameters.display === false) {
 		cube.visible = false;
 	}
-
-	/*
-	if (position.x == 0 && position.y == 0 && position.z == 0) {
-		cube.material.color.setHex(0xff0000);
-	} 
-	*/
-
+	
+	// if (position.x == 0 && position.y == 0 && position.z == 0) {
+	// 	cube.material.color.setHex(0xff0000);
+	// } 
+	
 }
 
 // Called every frame
@@ -174,8 +171,8 @@ function changeState(GRID, RULES, updateQueue) {
 				// survive?
 				if (cube.state === 1) {
 					if (cube.num_neighbors < numSurvive) {
-						var input = {cube: cube, neighbors: cube.num_neighbors, state: cube.state, vGridIndex: cube.vGridIndex};
-						updateQueue.push(input); // push it to queue to flip the state
+						//var input = {cube: cube, neighbors: cube.num_neighbors, state: cube.state, vGridIndex: cube.vGridIndex};
+						updateQueue.push(cube); // push it to queue to flip the state
 						cube.state = 0;
 						mutateNeighbours(GRID, -1, chunkLayer, rindex, index); // deincrement surrounding neighbor count
 
@@ -185,7 +182,6 @@ function changeState(GRID, RULES, updateQueue) {
 						// 	visualGrid.children[cube.vGridIndex].visible = false;
 						// }
 					}
-					//cube.num_neighbors = Math.floor(Math.random() * 6);
 					// birth?
 				} else if (cube.state === 0) {
 					if (cube.num_neighbors >= numBorn) {
@@ -193,17 +189,10 @@ function changeState(GRID, RULES, updateQueue) {
 						cube.state = 1;
 						mutateNeighbours(GRID, 1, chunkLayer, rindex, index); // increment the surrounding neighbor count
 					}
-					//cube.num_neighbors = Math.floor(Math.random() * 6);
 				}
 			});
 		});
 	});
-
-	// for each entry in the grid 
-	//  	check neighbors: update
-	// if dead deincrement all neighboring cubes
-	// if born increment all neighboring cubes
-	// if surviving do nothing
 }
 
 function renderGridHack(GRID) {
