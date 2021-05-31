@@ -36,6 +36,10 @@ const MISC = {
 	UPDATE_TIME: 1,
 }
 
+const DEBUG = {
+	axes: false
+}
+
 //Setup the 3 main components: scene, camera, renderer
 function setScene() {
 	scene = new THREE.Scene();
@@ -57,10 +61,14 @@ function setScene() {
 
 	scene.add(camera);
 	clock = new THREE.Clock(false);
+
 	// HELPER
-	const axesHelper = new THREE.AxesHelper(8);
-	scene.add(axesHelper);
-	scene.add(visualGrid);
+	if(DEBUG.axes){
+		const axesHelper = new THREE.AxesHelper(8);
+		scene.add(axesHelper);
+	}
+
+	scene.add(visualGrid); // show cubes
 
 	// Boundary Box
 	createBoundaryBox();
@@ -249,7 +257,7 @@ ruleFolder.open()
 const miscFolder = gui.addFolder("Misc");
 // miscFolder.add(MISC, "randColor");
 miscFolder.add(MISC, "posColor").onChange(updateCubeColour);
-miscFolder.add(MISC, "UPDATE_TIME", 0.1, 1, 0.01);
+miscFolder.add(MISC, "UPDATE_TIME", 0.1, 2, 0.01);
 miscFolder.open(MISC, "color");
 
 const gridFolder = gui.addFolder("Grid")
@@ -258,3 +266,6 @@ gridFolder.add(GRIDDIMENSIONS, "y", 0, 50, 1)
 gridFolder.add(GRIDDIMENSIONS, "z", 0, 50, 1)
 gridFolder.add(obj, 'resetGrid')
 gridFolder.open()
+
+const debugFolder = gui.addFolder("Debug");
+debugFolder.add(DEBUG, "axes");

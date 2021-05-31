@@ -14,5 +14,5 @@ server.use(express.static(publicDir));
 server.use('../lib/dat.gui.module.js', express.static(path.join(__dirname, '../../node_modules/three/examples/jsm/libs/dat.gui.module.js')));
 
 server.listen(PORT, () => {
-	console.log(`listening on port ${PORT}`);
+	console.log(`Automata at localhost:${PORT}`);
 });
