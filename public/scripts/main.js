@@ -18,6 +18,7 @@ let clock;
 let boundaryBox;
 let boundaryEdge; // boundaryBox
 let composer;
+let axesHelper; // visual axes render
 
 const RULES = {
 	numSurvive: 6,
@@ -62,17 +63,22 @@ function setScene() {
 	scene.add(camera);
 	clock = new THREE.Clock(false);
 
-	// HELPER
-	if(DEBUG.axes){
-		const axesHelper = new THREE.AxesHelper(8);
-		scene.add(axesHelper);
-	}
 
 	scene.add(visualGrid); // show cubes
 
 	// Boundary Box
 	createBoundaryBox();
 	scene.add(boundaryEdge);
+}
+
+function renderDebug(){
+
+	// HELPER
+	if(DEBUG.axes){
+		axesHelper = new THREE.AxesHelper(8);
+		scene.add(axesHelper);
+	}else if(!DEBUG.axes)
+		scene.remove(axesHelper);
 }
 
 function addLight() {
@@ -253,4 +259,4 @@ gridFolder.add(obj, 'resetGrid')
 gridFolder.open()
 
 const debugFolder = gui.addFolder("Debug");
-debugFolder.add(DEBUG, "axes");
+debugFolder.add(DEBUG, "axes").onChange(renderDebug);
